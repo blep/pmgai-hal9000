@@ -118,11 +118,12 @@ class TerminalWindow(object):
 
         c = evt.key
         if c.name == 'Enter' and self.text_buffer != '':
-            if self.text_buffer.startswith('/'):
-                self.events.user_command(TextEvent(self.text_buffer[1:]))
+            text = self.text_buffer.strip()
+            if text.startswith('/'):
+                self.events.user_command(TextEvent(text[1:]))
             else:
-                self.log(self.text_buffer, align='left')
-                self.events.user_input(TextEvent(self.text_buffer))
+                self.log(text, align='left')
+                self.events.user_input(TextEvent(text))
             self.text_buffer = ''
 
         if c.name == 'Backspace':
@@ -131,7 +132,7 @@ class TerminalWindow(object):
         self.show_input(self.text_buffer)       
 
     def on_key_char(self, text):
-        self.text_buffer += text
+        self.text_buffer += ''.join( c for c in text if ord(c) >= 32 )
         self.show_input(self.text_buffer)
 
     def on_blink(self, _):
